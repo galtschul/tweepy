@@ -15,15 +15,18 @@ class API(object):
     """Twitter API"""
 
     def __init__(self, auth_handler=None,
-            host='api.twitter.com', search_host='search.twitter.com',
-             cache=None, secure=True, api_root='/1.1', search_root='',
-            retry_count=0, retry_delay=0, retry_errors=None, timeout=60,
-            parser=None, compression=False):
+                 host='api.twitter.com', search_host='search.twitter.com',
+                 upload_host='upload.twitter.com',
+                 cache=None, secure=True, api_root='/1.1', search_root='', upload_root='/1',
+                 retry_count=0, retry_delay=0, retry_errors=None, timeout=60,
+                 parser=None, compression=False):
         self.auth = auth_handler
         self.host = host
         self.search_host = search_host
+        self.upload_host = upload_host
         self.api_root = api_root
         self.search_root = search_root
+        self.upload_root = upload_root
         self.cache = cache
         self.secure = secure
         self.compression = compression
@@ -80,6 +83,24 @@ class API(object):
         allowed_param = ['id']
     )
 
+    
+    """ status/update_with_media """
+    def update_status_with_media(self, filename, *args, **kargs):
+        headers, post_data = API._pack_image(filename, 3072, name='media[]')
+        kargs.update({
+                'headers': headers,
+                'post_data': post_data,
+                })
+        return bind_api(
+            path = '/statuses/update_with_media.json',
+            method = 'POST',
+            payload_type = 'status',
+            allowed_param = ['status', 'possibly_sensitive', 'in_reply_to_status_id', 'lat', 'long', 'source', 'place_id'],
+            require_auth = True,
+            upload_api = True,
+            secure = True
+        )(self, *args, **kargs)
+ 
     """ statuses/update """
     update_status = bind_api(
         path = '/statuses/update.json',
