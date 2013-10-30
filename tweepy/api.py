@@ -4,6 +4,7 @@
 
 import os
 import mimetypes
+import imghdr
 
 from tweepy.binder import bind_api
 from tweepy.error import TweepError
@@ -699,14 +700,12 @@ class API(object):
             raise TweepError('Unable to access file')
 
         # image must be gif, jpeg, or png
-        '''
-        file_type = mimetypes.guess_type(filename)
+        file_type = imghdr.what(filename)
         if file_type is None:
             raise TweepError('Could not determine file type')
         file_type = file_type[0]
         if file_type not in ['image/gif', 'image/jpeg', 'image/png']:
             raise TweepError('Invalid file type for image: %s' % file_type)
-        '''
 
         # build the mulitpart-formdata body
         fp = open(filename, 'rb')
