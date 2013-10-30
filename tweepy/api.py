@@ -704,7 +704,7 @@ class API(object):
         if file_type is None:
             raise TweepError('Could not determine file type')
         file_type = file_type[0]
-        if file_type not in ['image/gif', 'image/jpeg', 'image/png']:
+        if file_type not in ['gif', 'jpeg', 'png']:
             raise TweepError('Invalid file type for image: %s' % file_type)
 
         # build the mulitpart-formdata body
@@ -713,7 +713,7 @@ class API(object):
         body = []
         body.append('--' + BOUNDARY)
         body.append('Content-Disposition: form-data; name="%s"; filename="%s"' % (form_field, filename))
-        body.append('Content-Type: %s' % file_type)
+        body.append('Content-Type: image/%s' % file_type)
         body.append('')
         body.append(fp.read())
         body.append('--' + BOUNDARY + '--')
