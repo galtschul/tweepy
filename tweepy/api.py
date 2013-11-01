@@ -86,8 +86,8 @@ class API(object):
 
     
     """ status/update_with_media """
-    def update_status_with_media(self, filename, *args, **kargs):
-        headers, post_data = API._pack_image(filename, 3072, form_field='media[]')
+    def update_status_with_media(self, filename, *args, **kargs, file_type=None):
+        headers, post_data = API._pack_image(filename, 3072, form_field='media[]', file_type)
         kargs.update({
                 'headers': headers,
                 'post_data': post_data,
@@ -690,7 +690,7 @@ class API(object):
 
     """ Internal use only """
     @staticmethod
-    def _pack_image(filename, max_size, form_field="image"):
+    def _pack_image(filename, max_size, form_field="image", file_type=None):
         """Pack image from file into multipart-formdata post body"""
         # image must be less than 700kb in size
         try:
@@ -700,13 +700,12 @@ class API(object):
             raise TweepError('Unable to access file')
 
         # image must be gif, jpeg, or png
-        '''
-        file_type = imghdr.what(filename)
-        if file_type is None:
-            raise TweepError('Could not determine file type')
-        if file_type not in ['gif', 'jpeg', 'png']:
-            raise TweepError('Invalid file type for image: %s' % file_type)
-        '''
+        if file_type == None:
+            file_type = imghdr.what(filename)
+            if file_type is None:
+                raise TweepError('Could not determine file type')
+            if file_type not in ['gif', 'jpeg', 'png']:
+                raise TweepError('Invalid file type for image: %s' % file_type)
 
         # build the mulitpart-formdata body
         fp = open(filename, 'rb')
