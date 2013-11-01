@@ -87,7 +87,7 @@ class API(object):
     
     """ status/update_with_media """
     def update_status_with_media(self, filename, file_type=None, *args, **kargs):
-        headers, post_data = API._pack_image(filename, 3072, form_field='media[]', file_type)
+        headers, post_data = API._pack_image(filename, 3072, form_field='media[]', file_type=file_type)
         kargs.update({
                 'headers': headers,
                 'post_data': post_data,
